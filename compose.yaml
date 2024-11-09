@@ -1,0 +1,15 @@
+services:
+  server:
+    build: ./server
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./certs:/mnt/local/certs" 
+
+  registry:
+    image: "registry:2" 
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./registry/config.yaml:/etc/docker/registry/config.yml"
+      - "./certs:/mnt/local/certs"

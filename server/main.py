@@ -8,12 +8,12 @@ app = Flask(__name__)
 # =============================================================================
 # 
 # JWTs are always signed with a secret key. Docker registry requires this to be
-# a private key from a assymetric cryptography scheme.
+# a private key from a asymmetric cryptography scheme.
 #
-# Additionally, Docker Registry [1] requires the JWT to contain one of three
-# possible header claims (key id, jwk or certificate chain). This example uses
-# the certificate chain. Other methods may require more work and configuration
-# so that Docker Registry/Docker trusts unverified data.
+# Additionally, Docker Registry requires the JWT to contain one of three
+# possible header claims (key id, jwk or certificate chain) [1]. This example
+# uses the certificate chain. Other methods may require more work and
+# configuration so that Docker Registry/Docker trusts unverified data.
 #
 # Therefore, we must provide the certificate chain inside every single JWT
 # issued by our server to Docker Registry. In this example, we only pass the
@@ -81,9 +81,9 @@ acl = {
 #       GET http://localhost:8000/registry?service=localhost:5000
 #       Authorization BASIC user1:1234
 #
-# Note: some HTTP query parameters were removed. Note: Authorization is base-64
-# encoded. This doesn't make communication safe, which is why Docker Registry
-# _requires_ TLS (registry/config.yaml).
+# Note: some HTTP query parameters have been omitted. Note: Authorization is
+# base-64 encoded. This doesn't make communication safe, which is why Docker
+# Registry _requires_ TLS (registry/config.yaml).
 #
 # Step 3: Our server must decrypt the user credentials from the Authorization
 # header and check if such user exists. If login fails, return 401. Otherwise,
@@ -105,7 +105,8 @@ acl = {
 #
 # Step 2: Registry delegates authorization to our server:
 #
-#    GET http://localhost:8000/registry?service=localhost:5000&scope=repository:nginx:pull,push
+#    GET
+#    http://localhost:8000/registry?service=localhost:5000&scope=repository:nginx:pull,push
 #    Authorization BASIC user1:1234
 #
 # Step 3: The server has to decide whether `user1` can `pull,push` to the
@@ -131,24 +132,29 @@ acl = {
 #                            Appendix A: JWT
 # ----------------------------------------------------------------------------
 #
-# Our server must construct a JWT when responding to Docker Registry. The JWT
-# is not used as a credentials login, but as a secure data transfer mechanism.
-# The JWT has a required list of claims as specified in [1]. We will go over
-# the more important ones here
+# Our server must construct a JWT when responding to Docker Registry. The JWT is
+# used only as a response from our server to Docker Registry. The JWT has a
+# required list of claims as specified in [1]. We will go over the more
+# important claims here.
 #
 # [1] https://distribution.github.io/distribution/spec/auth/jwt/
 #
 # x5c    As mentioned, we must supply a certificate chain so that Registry can
-#        can validate the signed JWT.
-# iss    Our web server (in this case it's localhost:8000).
+#        validate the signed JWT. 
+#
+# iss    Our web server (in this case it's localhost:8000). 
+#
 # sub    Username of the user that issued a login/push/pull command.
-# aud    Docker registry (localhost:5000).
-# jti    All tokens must have an ID. In this example we used a UUID
-# access Custom claim used by Registry to check for the user's access scope.
-#        When the user is logging in, this claim should be empty.
-#   type    Should be "repository"
-#   name    Name of the repository (`name` or `username/name`)
-#   actions Array containing `pull` and/or `push`.
+#  
+# aud    Docker registry (localhost:5000). 
+#
+# jti    All tokens must have an ID. In this example we used a UUID 
+#
+# access Custom claim used by Registry to check for the user's access scope. When the user is logging in, this claim
+# should be empty. 
+#       type    Should be "repository" 
+#       name    Name of the repository (`name` or `username/name`) 
+#       actions Array of `pull` and/or `push`.
 #
 # The JWT is signed with the private key using the same algorithm that was used
 # to generate the certificate (in this example, RSA).

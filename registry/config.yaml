@@ -22,3 +22,11 @@ auth:
     # You must specify the root certificate bundle. For self-signed
     # certificates, that's just the certificate file itself.
     rootcertbundle: /mnt/local/certs/cert.pem
+notifications:
+  endpoints:
+    - name: ourserverwebhooklistener
+      # Endpoint URL needs the server hostname defined in compose.yaml.
+      url: http://server:8000/registry/notifications
+      timeout: 500ms
+      threshold: 5
+      backoff: 1s

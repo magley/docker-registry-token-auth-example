@@ -301,6 +301,24 @@ def build_jwt_for_docker_registry(username, service, scope):
 
     return jwt.encode(token_payload, SECRET_KEY, algorithm='RS256', headers=token_headers)    
 
+# ============================================================================
+#
+# This is a webhook endpoint.
+# It will fire on every `docker pull` and `docker push` (among other things).
+# 
+@app.route("/registry/notifications", methods=["POST", "PUT"])
+def registry_notification_endpoint():
+    data = request.get_json()
+    for event in data["events"]:
+        action = event.get("action", None)
+        username = event.get("actor", {}).get("name", None)
+        repository = event.get("target", {}).get("repository", None)
+        tag = event.get("target", {}).get("tag", None)
+        
+        print(f"User '{username}' completed '{action}' of repository '{repository}' with tag '{tag}'")
+
+    return {}
+
 
 if __name__ == "__main__":
     app.run(debug=True)

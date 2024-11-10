@@ -5,6 +5,8 @@ services:
       - "8000:8000"
     volumes:
       - "./certs:/mnt/local/certs" 
+    environment:
+      - PYTHONUNBUFFERED=1  
 
   registry:
     image: "registry:2" 

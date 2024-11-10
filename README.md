@@ -3,7 +3,8 @@
 ## About
 
 This repository demonstrates how to create a server which handles
-authentification and authorization for a private Docker Registry.
+authentification and authorization for a private Docker Registry (Docker
+Distribution).
 
 The official documentation for this is cryptic and useful resources are scarce.
 
@@ -13,6 +14,8 @@ control lists (i.e. a mock database).
 
 Token signing is done with a certificate chain. You must have a public and
 private key pair to sign the JWT used by Docker Registry. See `certs/README.md`.
+
+Additionally, a Docker Registry webhook implementation is also demonstrated.
 
 ## Getting started
 
